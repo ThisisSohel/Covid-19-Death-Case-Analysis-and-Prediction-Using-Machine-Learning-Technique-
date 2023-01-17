@@ -1,0 +1,145 @@
+Linear Regression
+---------------------------------------------
+
+                           Simple Linear regression
+------------------------------------------------------------------------
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+from pylab import rcParams 
+from sklearn import preprocessing
+
+data = pd.read_csv("covid_dataset.csv")
+
+# label_encoder object using
+label_encoder = preprocessing.LabelEncoder()
+data['Day']= label_encoder.fit_transform(data['Day']) 
+data.head(100)
+
+
+data.shape
+
+
+#Make prediction for Confirmed Case and Date case
+
+data.plot(kind= 'scatter', x='Confirmed case', y='Death Case')
+plt.show()
+
+#test train Split
+
+x_train, x_test, y_train, y_test = train_test_split(data['Confirmed case'], data['Death Case'], test_size=0.2)
+
+# test train split for vidualisation
+plt.scatter(x_train, y_train, label = 'Training Data', color = 'r', alpha = .7)
+plt.scatter(x_test, y_test, label = 'Testing Data', color = 'g', alpha = .7)
+plt.legend()
+plt.title('Train_Test Spliting')
+plt.show()
+
+L_reg = LinearRegression()
+L_reg.fit(x_train.values.reshape(-1,1), y_train.values)
+
+predict = L_reg.predict(x_test.values.reshape(-1,1))
+plt.plot(x_test, predict, label = 'Linear Regression', color = 'b')
+plt.scatter(x_test, y_test, label = 'The test Data', color = 'g', alpha = .7)
+plt.legend()
+plt.show()
+
+L_reg.predict([[8000]])[0]
+
+L_reg.score(x_test.values.reshape(-1,1), y_test.values)
+
+pred_y = pd.DataFrame({'Actual Data': y_test, 'Predicted Data': predict, 'Differenece Between Two Data': y_test - predict})
+pred_y [0:10]
+
+
+-----------------------------------------------------------------------
+
+                                     Multipe LR WithVaccination 
+------------------------------------------------------------------------
+
+
+from pydataset import data
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+from pylab import rcParams 
+from sklearn import preprocessing
+from sklearn.metrics import r2_score
+
+
+#Read The dataset
+
+data = pd.read_csv("Mergerd_Dataset.csv")
+
+# label_encoder object using
+
+label_encoder = preprocessing.LabelEncoder()
+data['day']= label_encoder.fit_transform(data['day']) 
+data.head(406)
+
+data.shape
+
+data.describe()
+
+
+# Spliting Data into 2 parts
+
+
+x= data.drop('death_case', axis=1)
+y= data['death_case']
+
+print('Shape of X =', x.shape)
+print('Shape of y =', y.shape)
+
+
+# Data Train_test 
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
+ 
+print('Shape of x_train = ', x_train.shape)
+print('Shape of y_train = ', y_train.shape)
+print('Shape of x_test = ', x_test.shape)
+print('Shape of y_test = ', y_test.shape)
+
+# Linear Regression Function Call
+
+linear_r = LinearRegression()
+
+# fitting the values:
+
+linear_r.fit(x_train, y_train)
+
+pred = linear_r.predict(x_test)
+print(pred)
+x_test.shape
+
+#After Getting First Dose Vaccine how death rate is decresing time to time
+
+plt.scatter(x_test['first_dose'], pred, color="g")
+
+#After Getting Second Dose Vaccine how death rate is decresing time to time
+
+plt.scatter(x_test['second_dose'], pred, color="r")
+
+linear_r.predict([[595, 19507, 244, 715369, 268632]])
+
+#finding the accuracy of the prediction
+
+r2_score( y_test, pred)
+
+plt.figure(figsize=(5,5))
+plt.scatter(y_test, pred, label = 'Vitualization of Data', color ='r')
+plt.xlabel('The actual Data')
+plt.ylabel('The predicted Data')
+plt.title('Data Description')
+
+pred_y = pd.DataFrame({'Actual Data': y_test, 'Predicted Data': pred, 'Differenece Between Two Data': y_test - pred})
+pred_y [0:100]
+
+
+
+
